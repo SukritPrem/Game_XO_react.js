@@ -1,6 +1,6 @@
 import { useState, useReducer } from "react";
 import Box from "./Box";
-import _ from "lodash";
+import _, { max } from "lodash";
 import isEqual from "lodash/isEqual";
 const reducer = (state, action) => {
   switch (action.type) {
@@ -83,7 +83,7 @@ export default function App() {
     sethiddenbutton_r(true);
     sethiddenbutton_n(true);
     setmaxhis_button(0);
-    setcount_el(0);
+    setcount_el(1);
     dispatch({
       type: "changed_board",
       value: {},
@@ -279,9 +279,28 @@ export default function App() {
       });
       // console.log(checkwinner);
       // console.log(state);
+      let check = false;
 
-      checkwin(checkwinner["value"], square_clone);
       // console.log(stringwin);
+      let count = [];
+      for (let i = 0; i < history.length; i++) {
+        // console.log(history[i]);
+        if (history[i]["array"][i] != null) {
+          // console.log(history[i]["array"]
+          count.push(history[i]["array"]);
+          setmaxhis(count.length);
+          setmaxhis_button(count.length);
+        }
+      }
+
+      //   console.log(maxhis);
+      if (maxhis === num * 2 + 1) {
+        settextwin("Dual");
+        setanotherwin(true);
+        setstatehis(true);
+        sethiddenbutton_n(false);
+      }
+      checkwin(checkwinner["value"], square_clone);
       function checkwin(checkwinner, square_clone) {
         for (let i = 0; i < checkwinner.length; i++) {
           const value = checkwinner[i];
@@ -291,12 +310,11 @@ export default function App() {
           for (let j = 0; j < value.length; j++) {
             check_array.push(square_clone[value[j]]["st"]);
           }
-
+          console.log(square_clone);
           let trim = "";
           for (let j = 0; j < check_array.length; j++) {
             const element = check_array.join("");
             trim = element.trim();
-            // console.log(trim.length);
 
             if (element === stringwin["valueX"]) {
               // console.log("found x");
@@ -305,17 +323,7 @@ export default function App() {
               setstatehis(true);
               sethiddenbutton_n(false);
               //for count and replay
-              let count = [];
-              for (let i = 0; i < history.length; i++) {
-                console.log(history[i]);
-                if (history[i]["array"][i] != null) {
-                  console.log(history[i]["array"]);
-                  count.push(history[i]["array"]);
-                  setmaxhis(count.length);
-                  setmaxhis_button(count.length);
-                }
-              }
-
+              check = true;
               /////////////////////////////
               break;
             } else if (element === stringwin["valueO"]) {
@@ -325,41 +333,12 @@ export default function App() {
               setstatehis(true);
               sethiddenbutton_n(false);
               //for count and replay
-              let count = [];
-              for (let i = 0; i < history.length; i++) {
-                // console.log(history[i]);
-                if (history[i]["array"][i] != null) {
-                  // console.log(history[i]["array"]);
-                  count.push(history[i]["array"]);
-                  setmaxhis(count.length);
-                  setmaxhis_button(count.length);
-                }
-              }
 
               /////////////////////////////
               break;
-            } else if (trim.length === num) {
-              setcount_el(count_el + 1);
-            }
-
-            if (count_el === num * 2) {
-              settextwin("Dual");
-              setanotherwin(true);
-              setstatehis(true);
-              sethiddenbutton_n(false);
-              //for count and replay
-              let count = [];
-              for (let i = 0; i < history.length; i++) {
-                // console.log(history[i]);
-                if (history[i]["array"][i] != null) {
-                  // console.log(history[i]["array"]);
-                  count.push(history[i]["array"]);
-                  setmaxhis(count.length);
-                  setmaxhis_button(count.length);
-                }
-              }
             }
           }
+          console.log(count_el);
         }
       }
     } else if (another_win === true) {
