@@ -10,7 +10,7 @@ const reducer = (state, action) => {
       };
     }
     default: {
-      console.log("Something is wrong");
+      console.log("Something is wrong in case changed board");
     }
   }
 };
@@ -22,7 +22,7 @@ const reducer_win = (state, action) => {
       };
     }
     default: {
-      console.log("Something is wrong2");
+      console.log("Something is wrong changed array for win");
     }
   }
 };
@@ -36,7 +36,7 @@ const reducer_s_win = (state, action) => {
       };
     }
     default: {
-      console.log("Something is wrong3");
+      console.log("Something is wrong changed string for win");
     }
   }
 };
@@ -54,23 +54,27 @@ export default function App() {
   const initialstringwin = { value: {} };
   const [stringwin, setstringwin] = useReducer(reducer_s_win, initialstringwin);
   const [another_win, setanotherwin] = useState(false); // check have some one win?
-  const [textwin, settextwin] = useState("Let's play you need click input"); //show text for winner
-  const [numhis, setnumhistory] = useState(0);
-  const [history, sethistory] = useState({});
-  const [maxhis, setmaxhis] = useState(0);
-  const [maxhis_button, setmaxhis_button] = useState(0);
-  const [statehis, setstatehis] = useState(false);
-  const [hiddenbutton_r, sethiddenbutton_r] = useState(true);
-  const [hiddenbutton_n, sethiddenbutton_n] = useState(true);
-  const [count_el, setcount_el] = useState(true);
+  const [textwin, settextwin] = useState("Input number for create board"); //show text for winner
+  const [numhis, setnumhistory] = useState(0); //set number for convert from datapresent to data stroe in history
+  const [history, sethistory] = useState({}); //keep value for can replay and rematch
+  const [maxhis, setmaxhis] = useState(0); //  for know about data store max in div and when click return or next.it adjust value maxhis
+  const [maxhis_button, setmaxhis_button] = useState(0); // for button hidden when value max,maxhis_button keep value max
+  const [statehis, setstatehis] = useState(false); //when mactch end next to status history
+  const [hiddenbutton_r, sethiddenbutton_r] = useState(true); //for set button return hidden
+  const [hiddenbutton_n, sethiddenbutton_n] = useState(true); //for set button next hidden
+  const [count_el, setcount_el] = useState(true); //count when div it full.already to status dual
+
+  //for receive value and send to input to num
   function handleChange(e) {
     let num1 = Number(e.target.value);
     // console.log(num1);
     setnum(num1);
   }
+  //when user Click
   function handleSubmit(e) {
     e.preventDefault();
     // console.log(num);
+    //set value about state react to alreadly receive value from user
     setcolunm(num);
     setnextplay(false);
     setturn(false);
@@ -88,11 +92,14 @@ export default function App() {
       type: "changed_board",
       value: {},
     });
+
     setwinner({
       type: "changed_array_for_win",
       value: {},
     });
     setSquare({});
+    ///////////////////////////////////////////////////////////
+    // create board for start play in game xo
     const loop = num * num;
 
     setSquare(() => {
@@ -104,6 +111,8 @@ export default function App() {
       }
       return newSquares;
     });
+    ///////////////////////////////////////////////////////////
+    //create history obj for keep value in between play game
     sethistory(() => {
       // console.log(...squarea);
       const newSquares = [];
@@ -113,6 +122,8 @@ export default function App() {
       }
       return newSquares;
     });
+    // ///////////////////////////////////////////////////////
+    // create array for win. array this .it equal key if key and value equal array_set_win and String_win you can win
     function array_set_win() {
       let array1 = [];
       let arrays = [];
@@ -170,6 +181,8 @@ export default function App() {
       type: "changed_array_for_win",
       value: array_win,
     });
+    // ///////////////////////////////////////////////////
+    // create string follow user create board if 3 string win xxx
     const [string_winX, string_winO] = Stringwin();
     function Stringwin() {
       let newSquaresX = "x";
@@ -187,16 +200,19 @@ export default function App() {
       valueX: string_winX,
       valueO: string_winO,
     });
+    // //////////////////////////////////////////////
   }
-
+  //////////////set css for adjust div like a board///////////
   let cssProperties = {};
   cssProperties["--columns-count"] = colunm;
   // console.log(square);
-
+  // ///////////////////////////////////////////////////////
+  //when user click div call function key
   function toggle(key) {
     if (another_win === false && statehis === false) {
       let square_clone = [];
-
+      ////////////////////////////////////////////////////////////
+      //when create board we have to show board first before store the data.
       if (nextplay === false) {
         square_clone = square.map((square, index) => {
           // console.log(square.st === " ");
@@ -230,6 +246,7 @@ export default function App() {
         ////////////////////////////////////
         // sethistory(...history, square_clone);
       } else if (nextplay === true) {
+        //when we create board finish next already to keep data to array
         square_clone = state["value"].map((square, index) => {
           if (square.id === key && square.st === " ") {
             const square1 = { ...square, st: "x" };
@@ -341,10 +358,9 @@ export default function App() {
           console.log(count_el);
         }
       }
-    } else if (another_win === true) {
     }
   }
-
+  /////////////////////////////////////////////////////////////
   //  console.log(nextplay);
   let squareElements = [];
   let button = [];
